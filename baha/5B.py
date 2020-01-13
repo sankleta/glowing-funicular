@@ -4,14 +4,16 @@ from queue import Queue
 
 
 class Graph:
-    def __init__(self, nodes_count, edges_count, directed=False):
+    def __init__(self, nodes_count, directed=False):
         self._graph = defaultdict(set)
+        for i in range(1, nodes_count + 1):
+            self._graph[i] = set()
         self._directed = directed
-        self._nodes_count = nodes_count
-        self._edges_count = edges_count
+        self._edges_count = 0
 
     def add(self, node1, node2):
         self._graph[node1].add(node2)
+        self._edges_count += 1
         if not self._directed:
             self._graph[node2].add(node1)
 
@@ -19,28 +21,28 @@ class Graph:
         used = set()
         queue = Queue()
         if self._graph:
-            queue.put_nowait(list(self._graph.keys())[0])
+            queue.put(1)
         else:
-            if self._nodes_count == 1:
+            if len(self._graph) == 1:
                 return True
             else:
                 return False
 
         while not queue.empty():
-            current_node = queue.get_nowait()
+            current_node = queue.get()
             used.add(current_node)
             adjacent_nodes = self._graph[current_node]
             for i in adjacent_nodes:
                 if i not in used:
-                    queue.put_nowait(i)
+                    queue.put(i)
 
-        if len(used) == self._nodes_count:
+        if len(used) == len(self._graph):
             return True
         else:
             return False
 
     def is_tree(self):
-        if self._nodes_count - 1 == self._edges_count and self.is_connected():
+        if len(self._graph) - 1 == self._edges_count and self.is_connected():
             return True
         else:
             return False
