@@ -8,9 +8,10 @@ from queue import Queue
 
 
 class Graph:
-    def __init__(self, directed=False):
+    def __init__(self, nodes_no, directed=False):
         self._graph = defaultdict(set)
         self._directed = directed
+        self._nodes_no = nodes_no
 
     def add(self, node1, node2):
         self._graph[node1].add(node2)
@@ -18,28 +19,27 @@ class Graph:
             self._graph[node2].add(node1)
 
     def is_connected(self):
-        nodes = list(self._graph.keys())
         used = set()
         queue = Queue()
-        queue.put(nodes[0])
+        queue.put(list(self._graph.keys())[0])
 
         while not queue.empty():
             current_node = queue.get()
-            if current_node not in used:
-                used.add(current_node)
-                adjacent_nodes = self._graph[current_node]
-                for i in adjacent_nodes:
+            used.add(current_node)
+            adjacent_nodes = self._graph[current_node]
+            for i in adjacent_nodes:
+                if i not in used:
                     queue.put(i)
 
-        if len(used) == len(nodes):
+        if len(used) == self._nodes_no:
             return True
         else:
             return False
 
 
-graph = Graph()
-
 nodes_no, edges_no = map(lambda x: int(x), input().split())
+
+graph = Graph(nodes_no)
 
 for _ in range(0, edges_no):
     n1, n2 = map(lambda x: int(x), input().split())
