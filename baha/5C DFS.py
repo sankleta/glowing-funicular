@@ -1,7 +1,13 @@
+
 # Дан ориентированный невзвешенный граф без кратных рёбер. Необходимо
 # определить, есть ли в нём циклы, и если есть, то вывести любой из них.
 
-from collections import defaultdict, deque
+
+
+
+#####!!!!!!!!!!!!!Doesn't work on large inputs due to stack overflow
+
+from collections import defaultdict
 
 
 class Graph:
@@ -17,8 +23,9 @@ class Graph:
 
         visited = set()
         for node in self._graph.keys():
-            if node not in visited and self.traverse(node, set(), visited):
-                return True
+            if node not in visited:
+                if self.traverse(node, set(), visited):
+                    return True
         return False
 
     def traverse(self, current_node, cycle, visited):
@@ -29,8 +36,9 @@ class Graph:
         for node in self._graph[current_node]:
             if node in cycle:
                 return True
-            if node not in visited and self.traverse(node, cycle, visited):
-                return True
+            if node not in visited:
+                if self.traverse(node, cycle, visited):
+                    return True
         cycle.remove(current_node)
         return False
 
