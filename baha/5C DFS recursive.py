@@ -3,8 +3,6 @@
 # определить, есть ли в нём циклы, и если есть, то вывести любой из них.
 
 
-
-
 #####!!!!!!!!!!!!!Doesn't work on large inputs due to stack overflow
 
 from collections import defaultdict
