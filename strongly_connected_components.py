@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 
 
 class Graph:
@@ -6,25 +6,22 @@ class Graph:
         self._graph = defaultdict(set)
         self._nodes_count = nodes_count
         self._visited = set()
-        self._current_label = nodes_count
-        self._order = [0] * (nodes_count + 1)
+        self._queue = deque()
 
     def add(self, node1, node2):
         self._graph[node1].add(node2)
 
     def topological_sort(self):
-        for node in range(1, nodes_no + 1):
+        for node in range(nodes_no, 0):
             if node not in self._visited:
-                self.DFS_DAG(node)
-        return self._order[1:]
+                self.DFS(node)
 
-    def DFS_DAG(self, node):
+    def DFS(self, node):
         self._visited.add(node)
         for adjacent_node in self._graph[node]:
             if adjacent_node not in self._visited:
-                self.DFS_DAG(adjacent_node)
-        self._order[self._current_label] = node
-        self._current_label -= 1
+                self.DFS(adjacent_node)
+        self._queue.append(node)
 
 
 nodes_no, edges_no = map(lambda x: int(x), input().split())
