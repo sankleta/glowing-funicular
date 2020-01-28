@@ -7,7 +7,7 @@ class Graph:
         self._graph_reverse = defaultdict(set)
         self._nodes_count = nodes_count
         self._visited = set()
-        self._queue = deque()
+        self._stack = deque()
 
     def add(self, node1, node2):
         self._graph[node1].add(node2)
@@ -20,8 +20,8 @@ class Graph:
 
         self._visited.clear()
 
-        while self._queue:
-            node = self._queue.pop()
+        while self._stack:
+            node = self._stack.pop()
             if node not in self._visited:
                 print(node)
                 self.DFS(node, False)
@@ -34,7 +34,7 @@ class Graph:
                 self.DFS(adjacent_node, reverse)
 
         if reverse:
-            self._queue.append(node)
+            self._stack.append(node)
 
 
 nodes_no, edges_no = map(lambda x: int(x), input().split())
