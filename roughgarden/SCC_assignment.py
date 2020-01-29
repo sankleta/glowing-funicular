@@ -22,8 +22,8 @@ class Graph:
         for node in range(self._nodes_count, 0, -1):
             if node not in self._visited:
                 sequence_stack = self.DFS(node, True)
-                for i in sequence_stack:
-                    self._second_traverse_stack.append(i)
+                sequence_stack.reverse()
+                self._second_traverse_stack.extend(sequence_stack)
 
         self._visited.clear()
 
@@ -63,6 +63,6 @@ try:
 except EOFError:
     pass
 
-top = graph.SCC()
+component_sizes = graph.SCC()
 
-print(sorted(top, reverse=True)[:5])
+print(sorted(component_sizes, reverse=True)[:5])
