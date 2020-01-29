@@ -10,9 +10,9 @@ class Graph:
         self._graph_reverse = defaultdict(set)
         self._nodes_count = nodes_count
         self._visited = set()
-        self.sequence_stack = deque()
-        self.dfs_stack = deque()
-        self._top = []
+        self._second_traverse_stack = deque()
+        self._dfs_stack = deque()
+        self._component_sizes = []
 
     def add(self, node1, node2):
         self._graph[node1].add(node2)
@@ -23,32 +23,32 @@ class Graph:
             if node not in self._visited:
                 sequence_stack = self.DFS(node, True)
                 for i in sequence_stack:
-                    self.sequence_stack.append(i)
+                    self._second_traverse_stack.append(i)
 
         self._visited.clear()
 
-        while self.sequence_stack:
-            node = self.sequence_stack.pop()
+        while self._second_traverse_stack:
+            node = self._second_traverse_stack.pop()
             if node not in self._visited:
-                size = len(self._visited)
+                visited_before = len(self._visited)
                 self.DFS(node, False)
-                self._top.append(len(self._visited) - size)
+                self._component_sizes.append(len(self._visited) - visited_before)
 
-        return self._top
+        return self._component_sizes
 
     def DFS(self, node, reverse):
 
         sequence_stack = deque()
-        self.dfs_stack.append(node)
+        self._dfs_stack.append(node)
 
-        while self.dfs_stack:
-            node = self.dfs_stack.pop()
+        while self._dfs_stack:
+            node = self._dfs_stack.pop()
             if reverse:
                 sequence_stack.appendleft(node)
             self._visited.add(node)
             for adjacent_node in self._graph_reverse[node] if reverse else self._graph[node]:
                 if adjacent_node not in self._visited:
-                    self.dfs_stack.append(adjacent_node)
+                    self._dfs_stack.append(adjacent_node)
         return sequence_stack
 
 
