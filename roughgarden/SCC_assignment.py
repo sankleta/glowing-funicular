@@ -2,10 +2,6 @@
 # Return the sizes of the 5 largest SCCs in the given graph, in decreasing order of sizes.
 
 from collections import defaultdict, deque
-import sys
-
-x = 875714
-sys.setrecursionlimit(x)
 
 
 class Graph:
@@ -14,7 +10,8 @@ class Graph:
         self._graph_reverse = defaultdict(set)
         self._nodes_count = nodes_count
         self._visited = set()
-        self._stack = deque()
+        self.sequence_stack = deque()
+        self.dfs_stack = deque()
         self._top = []
 
     def add(self, node1, node2):
@@ -24,12 +21,14 @@ class Graph:
     def SCC(self):
         for node in range(self._nodes_count, 0, -1):
             if node not in self._visited:
-                self.DFS(node, True)
+                sequence_stack = self.DFS(node, True)
+                for i in sequence_stack:
+                    self.sequence_stack.append(i)
 
         self._visited.clear()
 
-        while self._stack:
-            node = self._stack.pop()
+        while self.sequence_stack:
+            node = self.sequence_stack.pop()
             if node not in self._visited:
                 size = len(self._visited)
                 self.DFS(node, False)
@@ -38,14 +37,19 @@ class Graph:
         return self._top
 
     def DFS(self, node, reverse):
-        self._visited.add(node)
 
-        for adjacent_node in self._graph_reverse[node] if reverse else self._graph[node]:
-            if adjacent_node not in self._visited:
-                self.DFS(adjacent_node, reverse)
+        sequence_stack = deque()
+        self.dfs_stack.append(node)
 
-        if reverse:
-            self._stack.append(node)
+        while self.dfs_stack:
+            node = self.dfs_stack.pop()
+            if reverse:
+                sequence_stack.appendleft(node)
+            self._visited.add(node)
+            for adjacent_node in self._graph_reverse[node] if reverse else self._graph[node]:
+                if adjacent_node not in self._visited:
+                    self.dfs_stack.append(adjacent_node)
+        return sequence_stack
 
 
 nodes_no = 875714
@@ -61,3 +65,4 @@ except EOFError:
 
 top = graph.SCC()
 
+print(sorted(top, reverse=True)[:5])
