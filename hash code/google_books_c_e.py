@@ -32,19 +32,23 @@ def solve(filename):
             break
         for i in libraries:
             if i not in libraries_signed:
-                scores.append([sum(libraries[i][1][:(days_left - libraries[i][2]) * libraries[i][0]]), i])
+                scores.append([((days_left - libraries[i][2]) * libraries[i][0]), i])
 
         m = max(scores, key=lambda x: x[0])
         libraries_order.append(m[1])
         libraries_signed.add(m[1])
 
         books_sent.update(libraries[m[1]][1][:(days_left - libraries[m[1]][2]) * libraries[m[1]][0]])
+        to_delete = []
         for i in libraries:
             if i not in libraries_signed:
                 if libraries[i][1]:
                     libraries[i][1] = diff(libraries[i][1], books_sent)
-                else:
-                    del libraries[i]
+                if not libraries[i][1]:
+                    to_delete.append(i)
+
+        for i in to_delete:
+            del libraries[i]
 
         days_left -= libraries[m[1]][2]
 
@@ -57,8 +61,12 @@ def solve(filename):
 
 
 # solve("a_example.txt")
-# solve("b_read_on.txt")
-# solve("c_incunabula.txt")
-# solve("e_so_many_books.txt")
-# solve("f_libraries_of_the_world.txt")
-solve("d_tough_choices.txt")
+solve("b_read_on.txt")
+solve("c_incunabula.txt")
+solve("e_so_many_books.txt")
+solve("f_libraries_of_the_world.txt")
+# #solve("d_tough_choices.txt")
+
+# B
+# books 100000 libraries 100 days 1000
+# all books have the same score
