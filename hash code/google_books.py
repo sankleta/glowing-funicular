@@ -1,41 +1,64 @@
+import os
 
-books_total_no, libraries_no, days_no = map(lambda x: int(x), input().split())
-books_scores = list(map(lambda x: int(x), input().split()))
 
-libraries = {}
-scores = set()
+def diff(first, second):
+    return [item for item in first if item not in second]
 
-for i in range(0, libraries_no):
-    books_no, signup, ship = map(lambda x: int(x), input().split())
-    books = list(map(lambda x: int(x), input().split()))
-    if signup >= days_no:
-        continue
-    books.sort(key=lambda x: books_scores[x], reverse=True)
-    libraries[i] = [ship, books, signup]
 
-all_books = set()
-for i in range(0, books_total_no):
-    all_books.add(i)
+def solve(filename):
+    with open(filename, 'r') as f:
+        books_total_no, libraries_no, days_no = map(lambda x: int(x), next(f).split())
+        books_scores = list(map(lambda x: int(x), next(f).split()))
 
-order = []
+        libraries = {}
 
-while days_no > 0:
-    scores = []
-    for i in libraries:
-        if i not in order:
-            scores.append([sum(libraries[i][1][:(days_no - libraries[i][2]) * libraries[i][0]]), i])
+        for i in range(0, libraries_no):
+            books_no, signup, ship = map(lambda x: int(x), next(f).split())
+            books = list(map(lambda x: int(x), next(f).split()))
+            if signup >= days_no:
+                continue
+            books.sort(key=lambda x: books_scores[x], reverse=True)
+            libraries[i] = [ship, books, signup]
 
-    m = max(scores, key=lambda x: x[0])
-    order.append(m[1])
-    all_books.difference_update(libraries[m[1]][1])
-    days_no -= libraries[m[1]][2]
-    # for i in libraries:
-    #     if i not in order:
-    #         libraries[i][1] = list(all_books.intersection(libraries[i][1]))
+    libraries_order = []
+    libraries_signed = set()
+    books_sent = set()
 
-with open('answers.txt', 'w') as f:
-    f.write("{}\n".format(len(order)))
-    for i in order:
-        f.write("{} {}\n".format(i, len(libraries[i][1])))
-        f.write("{}\n".format(
-            " ".join([str(elem) for elem in sorted(libraries[i][1], key=lambda x: books_scores[x], reverse=True)])))
+    days_left = days_no
+
+    while days_left > 0:
+        scores = []
+        if len(libraries_order) == len(libraries):
+            break
+        for i in libraries:
+            if i not in libraries_signed:
+                scores.append([sum(libraries[i][1][:(days_left - libraries[i][2]) * libraries[i][0]]), i])
+
+        m = max(scores, key=lambda x: x[0])
+        libraries_order.append(m[1])
+        libraries_signed.add(m[1])
+
+        books_sent.update(libraries[m[1]][1][:(days_left - libraries[m[1]][2]) * libraries[m[1]][0]])
+        for i in libraries:
+            if i not in libraries_signed:
+                if libraries[i][1]:
+                    libraries[i][1] = diff(libraries[i][1], books_sent)
+                else:
+                    del libraries[i]
+
+        days_left -= libraries[m[1]][2]
+
+    with open('answers/{}-answers.txt'.format(os.path.basename(filename)), 'w') as f:
+        f.write("{}\n".format(len(libraries_order)))
+        for i in libraries_order:
+            f.write("{} {}\n".format(i, len(libraries[i][1])))
+            f.write("{}\n".format(
+                " ".join([str(elem) for elem in sorted(libraries[i][1], key=lambda x: books_scores[x], reverse=True)])))
+
+
+# solve("a_example.txt")
+# solve("b_read_on.txt")
+# solve("c_incunabula.txt")
+# solve("e_so_many_books.txt")
+# solve("f_libraries_of_the_world.txt")
+solve("d_tough_choices.txt")
