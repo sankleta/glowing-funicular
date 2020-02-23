@@ -32,9 +32,12 @@ def solve(filename):
             break
         for i in libraries:
             if i not in libraries_signed:
-                scores.append([((days_left - libraries[i][2]) * (len(libraries[i][1])/libraries[i][0])), i])
-
-        m = max(scores, key=lambda x: x[0])
+                if days_left - libraries[i][2] > 0:
+                    scores.append([((days_left - libraries[i][2]) * (len(libraries[i][1])/libraries[i][0])), i])
+        if scores:
+            m = max(scores, key=lambda x: x[0])
+        else:
+            break
         libraries_order.append(m[1])
         libraries_signed.add(m[1])
 
@@ -61,9 +64,9 @@ def solve(filename):
 
 
 # solve("a_example.txt")
-solve("b_read_on.txt")
-solve("c_incunabula.txt")
-solve("e_so_many_books.txt")
+#solve("b_read_on.txt")
+# solve("c_incunabula.txt")
+# solve("e_so_many_books.txt")
 solve("f_libraries_of_the_world.txt")
 # #solve("d_tough_choices.txt")
 
