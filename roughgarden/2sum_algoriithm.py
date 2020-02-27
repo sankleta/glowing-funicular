@@ -1,3 +1,8 @@
+# The file contains 1 million integers, both positive and negative (there might be some repetitions!).
+# Your task is to compute the number of target values t
+#  in the interval [-10000,10000] (inclusive) such that there are distinct numbers x, y
+#  in the input file that satisfy x + y = t
+
 import concurrent.futures
 import time
 
