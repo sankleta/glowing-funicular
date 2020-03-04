@@ -1,5 +1,4 @@
 from collections import defaultdict
-from math import inf
 
 
 class Graph:
@@ -12,25 +11,28 @@ class Graph:
         self._graph[node1].append((node2, value))
 
     def bellman_ford(self, start):
-        changed = {}
-        calculated = [inf] * (self.nodes_no + 1)
-        calculated[start] = 0
+        to_change = {start: 0}
+        last_iteration_affected_nodes = [start]
+        calculated = [float("Inf")] * (self.nodes_no + 1)
+        i = 0
 
-        for i in range(1, 2 * nodes_no):
-            for v in range(1, nodes_no + 1):
+        while True:
+            for v in last_iteration_affected_nodes:
                 for node, value in self._graph[v]:
-                    min_value = min(changed[node] if node in changed else calculated[node], calculated[v] + value)
+                    min_value = min(to_change[node] if node in to_change else calculated[node], calculated[v] + value)
                     if min_value != calculated[node]:
                         if i > (nodes_no - 1):
-                            changed[node] = -inf
+                            to_change[node] = -float("Inf")
                         else:
-                            changed[node] = min_value
-            if changed:
-                for node in changed:
-                    calculated[node] = changed[node]
-                changed = {}
+                            to_change[node] = min_value
+            if to_change:
+                last_iteration_affected_nodes = list(to_change.keys())
+                for node in last_iteration_affected_nodes:
+                    calculated[node] = to_change[node]
+                to_change = {}
             else:
                 break
+            i += 1
 
         return calculated[1:]
 
@@ -42,9 +44,9 @@ for i in range(0, edges_no):
     graph.add(node1, node2, value)
 
 for i in graph.bellman_ford(start):
-    if i == -inf:
+    if i == -float('Inf'):
         print("-")
-    elif i == inf:
+    elif i == float('Inf'):
         print("*")
     else:
         print(i)
