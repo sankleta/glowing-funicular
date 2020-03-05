@@ -4,8 +4,8 @@ from collections import defaultdict
 class Graph:
     def __init__(self, nodes_no, edges_no):
         self._graph = defaultdict(list)
-        self.nodes_no = nodes_no
-        self.edges_no = edges_no
+        self._nodes_no = nodes_no
+        self._edges_no = edges_no
 
     def add(self, node1, node2, value):
         self._graph[node1].append((node2, value))
