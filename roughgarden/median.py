@@ -29,3 +29,5 @@ with open("Median.txt", "r") as f:
         median_sum -= max_heap[0]
 
 print(median_sum)
+
+#46831213
