@@ -18,15 +18,29 @@ class Graph:
         self._graph = defaultdict(list)
         self._nodes_no = nodes_no
         self._edges_no = edges_no
+        self._paths = [[float("Inf")] * self._nodes_no for i in range(self._nodes_no)]
+        self._has_negative_cycle = False
+        for i in range(self._nodes_no):
+            self._paths[i][i] = 0
 
     def add(self, _from, to, value):
         self._graph[_from].append((to, value))
+        if _from == to and to < 0:
+            self._has_negative_cycle = True
+
+        if self._paths[_from - 1][to - 1] > value:
+            self._paths[_from - 1][to - 1] = value
 
     def floyd_warshall(self):
-        paths = [[float("Inf")] * self._nodes_no for i in range(self._nodes_no)]
-        for i in range(self._nodes_no):
-            for j in range(self._nodes_no):
-                pass
+        if self._has_negative_cycle:
+            return "-"
+        else:
+            for k in range(self._nodes_no):
+                for i in range(self._nodes_no):
+                    for j in range(self._nodes_no):
+                        if self._paths[i][j] > (self._paths[i][k] + self._paths[k][j]):
+                            self._paths[i][j] = (self._paths[i][k] + self._paths[k][j])
+            return self._paths
 
 
 with open("g1.txt", 'r') as f:
