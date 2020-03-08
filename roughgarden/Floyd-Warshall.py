@@ -10,42 +10,48 @@
 # If each of the three graphs has a negative-cost cycle, then enter "NULL" in the box
 # below. If one or more of the graphs have no negative-cost cycles, then enter
 # the smallest of the lengths of their shortest shortest paths.
-from collections import defaultdict
 
 
 class Graph:
-    def __init__(self, nodes_no, edges_no):
-        self._graph = defaultdict(list)
+    def __init__(self, nodes_no):
         self._nodes_no = nodes_no
         self._edges_no = edges_no
         self._paths = [[float("Inf")] * self._nodes_no for i in range(self._nodes_no)]
         self._has_negative_cycle = False
+        self._shortest_length = 0
         for i in range(self._nodes_no):
             self._paths[i][i] = 0
 
     def add(self, _from, to, value):
-        self._graph[_from].append((to, value))
         if _from == to and to < 0:
             self._has_negative_cycle = True
 
         if self._paths[_from - 1][to - 1] > value:
             self._paths[_from - 1][to - 1] = value
 
+        if value < self._shortest_length:
+            self._shortest_length = value
+
     def floyd_warshall(self):
         if self._has_negative_cycle:
-            return "-"
+            return "NEGATIVE CYCLE"
         else:
             for k in range(self._nodes_no):
                 for i in range(self._nodes_no):
                     for j in range(self._nodes_no):
                         if self._paths[i][j] > (self._paths[i][k] + self._paths[k][j]):
+                            if i == j and self._paths[i][k] + self._paths[k][j] < 0:
+                                self._has_negative_cycle = True
+                                return "NEGATIVE CYCLE"
                             self._paths[i][j] = (self._paths[i][k] + self._paths[k][j])
-            return self._paths
+                            if self._paths[i][k] + self._paths[k][j] < self._shortest_length:
+                                self._shortest_length = self._paths[i][k] + self._paths[k][j]
+            return self._shortest_length
 
 
-with open("g1.txt", 'r') as f:
+with open("g3.txt", 'r') as f:
     nodes_no, edges_no = map(lambda x: int(x), next(f).split())
-    graph = Graph(nodes_no, edges_no)
+    graph = Graph(nodes_no)
 
     for line in f:
         _from, to, value = map(lambda x: int(x), line.split())
