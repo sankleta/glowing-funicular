@@ -66,3 +66,5 @@ except EOFError:
 component_sizes = graph.SCC()
 
 print(sorted(component_sizes, reverse=True)[:5])
+
+#[434823, 968, 459, 313, 211]

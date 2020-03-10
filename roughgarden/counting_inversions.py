@@ -2,6 +2,8 @@ import math
 
 with open("IntegerArray.txt") as f:
     integer_array = list(map(lambda x: int(x), f))
+
+
 # integer_array = [1, 3, 5, 2, 4, 6]
 
 def sort_and_count(integer_array):
@@ -45,3 +47,5 @@ def merge_and_count(left, right, n):
 
 a = sort_and_count(integer_array)
 print(a[1])
+
+#2407905288
