@@ -1,19 +1,24 @@
-def impossible(groups, students, k, generosities):
-    guests = 0
-    for _ in generosities:
-        if _[0] > students * k:
-            return True
-        guests += _[0]
-
-    if guests > groups * students * k:
-        return True
+import os
 
 
 def solve(groups, students, k, generosities, charm):
-    pass
+    guests = 0
+    table_rank = []
+    for _ in generosities:
+        if _[0] > students * k:
+            return -1
+        table_rank.append(
+            [sum(_[1:]), _[0]])
+        guests += _[0]
+
+    if guests > groups * students * k:
+        return -1
+    else:
+        return None
 
 
 if __name__ == '__main__':
+    fptr = open(os.environ['OUTPUT_PATH'], 'w')
     tc = int(input())
     for tc_itr in range(tc):
         groups, students, tables = map(int, input().rstrip().split())
@@ -31,8 +36,7 @@ if __name__ == '__main__':
 
         k = int(input())
 
-        if impossible(groups, students, k, generosities):
-            print(-1)
-        else:
-            res = solve(groups, students, k, generosities, charm)
-            print(res)
+        res = solve(groups, students, k, generosities, charm)
+        fptr.write(str(res) + '\n')
+
+    fptr.close()
