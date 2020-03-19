@@ -7,3 +7,7 @@
 # The superior approach stores the unprocessed vertices in the heap.
 # Note this requires a heap that supports deletions, and you'll probably need to maintain some
 # kind of mapping between vertices and their positions in the heap.
+with open("prim_edges.txt", "r") as f:
+    nodes_no, edges_no = map(lambda x: int(x), next(f).split())
+    for line in f:
+        _from, to, value = map(lambda x: int(x), line.split())
