@@ -8,4 +8,4 @@ with open("knapsack.txt") as f:
     print(a)
     for i in items:
         for j in range(knapsack_size):
-            pass
+            a[j][i] = max(a[j][i - 1], a[j - items[i][0] + items[i][0]])
