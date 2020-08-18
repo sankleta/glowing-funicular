@@ -7,6 +7,34 @@
 # The superior approach stores the unprocessed vertices in the heap.
 # Note this requires a heap that supports deletions, and you'll probably need to maintain some
 # kind of mapping between vertices and their positions in the heap.
+from collections import defaultdict
+from heapq import heappush, heappop
+
+
+class Graph:
+    def __init__(self, nodes_count):
+        self._graph = defaultdict(list)
+        self._nodes_count = nodes_count
+        self._visited = dict()
+
+    def add(self, node1, node2, value):
+        self._graph[node1].append((node2, value))
+
+    def prim(self, start_node):
+        heap = []
+        heappush(heap, (0, start_node))
+        while heap:
+            value, node = heappop(heap)
+            if node in self._visited:
+                continue
+            self._visited[node] = value
+            for i, j in self._graph[node]:
+                if i not in self._visited:
+                    heappush(heap, (value + j, i))
+
+        return self._visited
+
+
 with open("prim_edges.txt", "r") as f:
     nodes_no, edges_no = map(lambda x: int(x), next(f).split())
     for line in f:
