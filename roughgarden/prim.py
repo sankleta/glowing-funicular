@@ -8,34 +8,50 @@
 # Note this requires a heap that supports deletions, and you'll probably need to maintain some
 # kind of mapping between vertices and their positions in the heap.
 from collections import defaultdict
-from heapq import heappush, heappop
+from heapq import heappush, heappop, heapify
 
 
 class Graph:
     def __init__(self, nodes_count):
         self._graph = defaultdict(list)
         self._nodes_count = nodes_count
-        self._visited = dict()
+        self.visited = dict()
 
     def add(self, node1, node2, value):
         self._graph[node1].append((node2, value))
+        self._graph[node2].append((node1, value))
 
     def prim(self, start_node):
         heap = []
+        touched = dict()
         heappush(heap, (0, start_node))
-        while heap:
+        while len(self.visited) < self._nodes_count:
             value, node = heappop(heap)
-            if node in self._visited:
+            if node in self.visited:
                 continue
-            self._visited[node] = value
+            self.visited[node] = value
             for i, j in self._graph[node]:
-                if i not in self._visited:
-                    heappush(heap, (value + j, i))
-
-        return self._visited
+                if i not in self.visited:
+                    if i not in touched:
+                        heappush(heap, (j, i))
+                        touched[i] = j
+                    else:
+                        if touched[i] > j:
+                            heap[heap.index((touched[i], i))] = (j, i)
+                            touched[i] = j
+                            heapify(heap)
 
 
 with open("prim_edges.txt", "r") as f:
     nodes_no, edges_no = map(lambda x: int(x), next(f).split())
+    graph = Graph(nodes_no)
     for line in f:
         _from, to, value = map(lambda x: int(x), line.split())
+        graph.add(_from, to, value)
+
+    graph.prim(1)
+    cost = 0
+    for key in graph.visited:
+        cost += graph.visited[key]
+
+    print(cost)
