@@ -24,7 +24,6 @@ with open("clustering1.txt", "r") as f:
     elements.sort(key=lambda x: x[2])
     max_spacing = 0
     for e in elements:
-
         if unionFind.size >= 4:
             max_spacing = e[2]
             unionFind.union(e[0], e[1])
