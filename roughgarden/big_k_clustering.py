@@ -14,14 +14,11 @@
 
 # 0 1 1 0 0 1 1 0 0 1 0 1 1 1 1 1 1 0 1 0 1 1 0 1
 from collections import defaultdict
-from itertools import permutations
+from itertools import combinations
 
 from union_find import UnionFind
 
-s = "000000000000000000000011"
-p = permutations("011", 24)
-for i in p:
-    print(i)
+
 
 with open("clustering_big.txt", "r") as f:
     size, bitsize = map(lambda x: int(x), next(f).split())
@@ -35,10 +32,31 @@ with open("clustering_big.txt", "r") as f:
     for i in range(size):
         element_dict[elements[i]].append(i)
 
+    hamming_one = []
+    for i in range(bitsize):
+        number = ["0"] * bitsize
+        number[i] = "1"
+        hamming_one.append(int("".join(number), 2))
+
+    hamming_two = []
+    r = combinations(hamming_one, 2)
+    for i, j in r:
+        hamming_two.append(i ^ j)
+
     for i in element_dict:
         l = element_dict[i]
         if len(l) > 1:
-            for i in l:
-                unionFind.union(i, l[0])
+            for j in l:
+                unionFind.union(j, l[0])
+
+    for i in hamming_one:
+        for j in element_dict:
+            if j ^ i in element_dict:
+                unionFind.union(element_dict[j ^ i][0], element_dict[j][0])
+
+    for i in hamming_two:
+        for j in element_dict:
+            if j ^ i in element_dict:
+                unionFind.union(element_dict[j ^ i][0], element_dict[j][0])
 
     print(unionFind.size)
