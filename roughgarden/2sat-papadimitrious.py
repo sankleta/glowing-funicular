@@ -1,7 +1,7 @@
 import random
 
 clauses = []
-with open("2sat6.txt") as f:
+with open("2sat4.txt") as f:
     size = int(next(f))
     for line in f:
         a, b = map(lambda x: int(x), line.split())
@@ -34,7 +34,13 @@ for i in range(2 * (size ^ 2)):
         print("yes")
         break
     else:
+        print(len(to_change))
+        # if len(to_change) > 10:
         for j in to_change:
             variables[j - 1] = not variables[j - 1]
+        # else:
+        #     j = random.choice(list(to_change))
+        #     variables[j - 1] = not variables[j - 1]
         to_change = set()
 
+# 10000
