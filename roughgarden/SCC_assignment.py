@@ -56,15 +56,16 @@ nodes_no = 875714
 
 graph = Graph(nodes_no)
 
-try:
-    while True:
-        node1, node2 = map(lambda x: int(x), input().split())
+
+with open("SCC.txt") as f:
+    for line in f:
+        node1, node2 = map(lambda x: int(x), line.split())
         graph.add(node1, node2)
-except EOFError:
-    pass
+
 
 component_sizes = graph.SCC()
 
 print(sorted(component_sizes, reverse=True)[:5])
 
-#[434823, 968, 459, 313, 211]
+#[434821, 968, 459, 313, 211]
+#[434823, 969, 459, 313, 211]

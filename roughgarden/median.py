@@ -30,4 +30,4 @@ with open("Median.txt", "r") as f:
 
 print(median_sum)
 
-#46831213
+#1213
